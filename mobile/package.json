@@ -1,0 +1,36 @@
+{
+  "name": "treinos-offline",
+  "version": "0.1.0",
+  "main": "index.ts",
+  "dependencies": {
+    "expo": "~57.0.26",
+    "expo-crypto": "~57.0.3",
+    "expo-dev-client": "~57.0.19",
+    "expo-file-system": "~57.0.7",
+    "expo-image-picker": "~57.0.20",
+    "expo-location": "~57.0.20",
+    "expo-network": "~57.0.2",
+    "expo-sqlite": "~57.0.3",
+    "expo-status-bar": "~57.0.1",
+    "expo-task-manager": "~57.0.21",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-safe-area-context": "~5.7.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.2",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --go --android",
+    "android:dev": "expo run:android",
+    "ios": "expo start --go --ios",
+    "ios:dev": "expo run:ios",
+    "typecheck": "tsc --noEmit",
+    "test:distance": "node --test tests/distance.test.mjs",
+    "test:gps": "node --test tests/gpsValidation.test.mjs",
+    "test:sync": "node --test tests/syncQueueMigration.test.mjs tests/syncConfig.test.mjs tests/syncFlow.test.mjs"
+  },
+  "private": true
+}
