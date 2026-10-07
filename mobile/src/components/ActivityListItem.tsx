@@ -1,5 +1,6 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import type { Activity } from '../types/Activity';
+import { SavePhotoButton } from './SavePhotoButton';
 
 type Props = {
   activity: Activity;
@@ -60,6 +61,7 @@ export function ActivityListItem({ activity }: Props) {
               <Text style={styles.photoLabel}>
                 Início {formatPhotoTime(activity.startPhotoTakenAt)}
               </Text>
+              <SavePhotoButton key={activity.startPhotoUri} uri={activity.startPhotoUri} label="inicial" />
             </View>
           )}
           {activity.finishPhotoUri && (
@@ -72,6 +74,7 @@ export function ActivityListItem({ activity }: Props) {
               <Text style={styles.photoLabel}>
                 Fim {formatPhotoTime(activity.finishPhotoTakenAt)}
               </Text>
+              <SavePhotoButton key={activity.finishPhotoUri} uri={activity.finishPhotoUri} label="final" />
             </View>
           )}
         </View>
@@ -96,8 +99,8 @@ const styles = StyleSheet.create({
   date: { color: '#6e7d74', fontSize: 13, marginTop: 4 },
   duration: { color: '#365448', fontSize: 15, fontWeight: '600' },
   syncStatus: { color: '#648575', fontSize: 12, fontWeight: '600', marginTop: 8 },
-  photosRow: { borderTopColor: '#e2e8e5', borderTopWidth: 1, flexDirection: 'row', gap: 20, marginTop: 14, paddingTop: 14 },
-  photoItem: { alignItems: 'center' },
+  photosRow: { borderTopColor: '#e2e8e5', borderTopWidth: 1, flexDirection: 'row', gap: 12, marginTop: 14, paddingTop: 14 },
+  photoItem: { alignItems: 'center', width: 112 },
   photoImage: { borderRadius: 10, height: 74, width: 74 },
   photoLabel: { color: '#53695b', fontSize: 12, marginTop: 6 },
 });

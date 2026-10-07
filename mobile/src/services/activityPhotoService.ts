@@ -1,7 +1,9 @@
 import * as Crypto from 'expo-crypto';
 import { Directory, File, Paths } from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
+import * as MediaLibrary from 'expo-media-library';
 import type { ActivityPhoto } from '../types/Activity';
+import { writeWatermarkedPhoto } from './photoWatermark';
 
 export class PhotoCaptureError extends Error {
   constructor(message: string) {
@@ -14,19 +16,6 @@ type PhotoMoment = 'start' | 'finish';
 
 function photoDirectory(): Directory {
   return new Directory(Paths.document, 'activity-photos');
-}
-
-function fileExtension(mimeType: string | null | undefined): string {
-  switch (mimeType) {
-    case 'image/png':
-      return 'png';
-    case 'image/heic':
-      return 'heic';
-    case 'image/webp':
-      return 'webp';
-    default:
-      return 'jpg';
-  }
 }
 
 export async function captureActivityPhoto(moment: PhotoMoment): Promise<ActivityPhoto | null> {
@@ -42,6 +31,7 @@ export async function captureActivityPhoto(moment: PhotoMoment): Promise<Activit
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ['images'],
       quality: 0.85,
+      allowsEditing: false,
       exif: false,
     });
     if (result.canceled) return null;
@@ -54,12 +44,19 @@ export async function captureActivityPhoto(moment: PhotoMoment): Promise<Activit
     directory.create({ idempotent: true, intermediates: true });
     const destination = new File(
       directory,
-      `${moment}-${capturedAt}-${Crypto.randomUUID()}.${fileExtension(asset.mimeType)}`
+      `${moment}-${capturedAt}-${Crypto.randomUUID()}.jpg`
     );
     try {
-      await new File(asset.uri).copy(destination);
+      await writeWatermarkedPhoto(
+        asset.uri,
+        asset.width,
+        asset.height,
+        capturedAt,
+        moment,
+        destination
+      );
       if (!destination.exists || destination.size === 0) {
-        throw new Error('The copied photo is empty.');
+        throw new Error('The watermarked photo is empty.');
       }
     } catch (error) {
       if (destination.exists) destination.delete();
@@ -71,6 +68,35 @@ export async function captureActivityPhoto(moment: PhotoMoment): Promise<Activit
     if (error instanceof PhotoCaptureError) throw error;
     console.error('Failed to capture or save activity photo:', error);
     throw new PhotoCaptureError('Não foi possível tirar ou salvar a foto. Tente novamente.');
+  }
+}
+
+export class PhotoExportError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'PhotoExportError';
+  }
+}
+
+export async function saveActivityPhotoToGallery(uri: string): Promise<void> {
+  const file = new File(uri);
+  if (!file.exists || file.size === 0) {
+    throw new PhotoExportError('Esta foto não está mais disponível no aparelho.');
+  }
+
+  try {
+    const currentPermission = await MediaLibrary.getPermissionsAsync(true, ['photo']);
+    const permission = currentPermission.granted
+      ? currentPermission
+      : await MediaLibrary.requestPermissionsAsync(true, ['photo']);
+    if (!permission.granted) {
+      throw new PhotoExportError('Permita salvar fotos na galeria nas configurações do aparelho.');
+    }
+    await MediaLibrary.Asset.create(file.uri);
+  } catch (error) {
+    if (error instanceof PhotoExportError) throw error;
+    console.error('Failed to export an activity photo:', error);
+    throw new PhotoExportError('Não foi possível salvar a foto na galeria. Tente novamente.');
   }
 }
 

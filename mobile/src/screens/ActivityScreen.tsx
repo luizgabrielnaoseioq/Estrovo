@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AppState, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { SavePhotoButton } from '../components/SavePhotoButton';
 import type { GpsSummary } from '../database/repositories/locationPointRepository';
 import {
   captureActivityPhoto,
@@ -169,6 +170,7 @@ export function ActivityScreen({ activity, onFinishActivity }: Props) {
                     })}`
                   : 'Salva no aparelho'}
               </Text>
+              <SavePhotoButton key={activity.startPhotoUri} uri={activity.startPhotoUri} label="inicial" />
             </View>
           </View>
         )}

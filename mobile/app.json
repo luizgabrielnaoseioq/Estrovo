@@ -41,6 +41,13 @@
         }
       ],
       [
+        "expo-media-library",
+        {
+          "savePhotosPermission": "Permita salvar as fotos dos treinos na galeria.",
+          "granularPermissions": ["photo"]
+        }
+      ],
+      [
         "expo-location",
         {
           "locationWhenInUsePermission": "Permita o acesso à localização para registrar seu trajeto durante a atividade.",

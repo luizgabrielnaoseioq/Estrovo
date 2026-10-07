@@ -21,6 +21,8 @@ Para testar o segundo plano e a câmera no Android, gere e instale uma build de 
 
 As fotos ficam no diretório de documentos do app e suas URIs e horários de captura ficam associados à atividade no SQLite. Uma build de desenvolvimento feita antes da inclusão de `expo-image-picker` precisa ser substituída por uma build nova para a câmera funcionar.
 
+Fotos novas recebem uma faixa com data e hora locais gravada nos pixels antes de serem associadas ao treino. O app abre apenas a câmera para criar fotos de início e fim; não há importação da galeria. O botão **Salvar foto** cria uma cópia na galeria, mediante a permissão do aparelho, sem remover o arquivo usado pelo treino. Fotos registradas antes da marca d'água permanecem como foram capturadas. Como `expo-media-library`, `expo-image-manipulator` e Skia incluem código nativo, é preciso instalar uma nova build de desenvolvimento para testar essa etapa.
+
 Para testar a recuperação, inicie uma atividade, feche o app e abra-o novamente. Confira a tela **Treino encontrado** e a foto inicial. Toque em **Continuar atividade**, feche e abra mais uma vez e então finalize pela tela de recuperação. A atividade finalizada deve aparecer no histórico com as duas fotos, sem criar outra atividade nem perder os pontos já salvos. O sistema operacional pode encerrar o rastreamento durante um fechamento forçado; ao reabrir, o app verifica e reinicia o serviço quando a permissão de localização em segundo plano está disponível.
 
 ## Fila de sincronização
