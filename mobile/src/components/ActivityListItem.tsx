@@ -1,9 +1,12 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import type { Activity } from '../types/Activity';
+import { RouteMiniMap } from './RouteMiniMap';
 import { SavePhotoButton } from './SavePhotoButton';
 
 type Props = {
   activity: Activity;
+  mapRefreshKey?: number;
+  preferStreetMap?: boolean;
 };
 
 function formatDistance(meters: number): string {
@@ -24,7 +27,7 @@ function formatPhotoTime(timestamp: number | undefined): string {
     : '';
 }
 
-export function ActivityListItem({ activity }: Props) {
+export function ActivityListItem({ activity, mapRefreshKey, preferStreetMap = false }: Props) {
   const duration =
     activity.status === 'recording' ? 'Em andamento' : formatDuration(activity.durationSeconds);
   const hasMeasuredDistance = activity.hasValidGpsPoint;
@@ -79,6 +82,7 @@ export function ActivityListItem({ activity }: Props) {
           )}
         </View>
       )}
+      {activity.hasValidGpsPoint && <RouteMiniMap activityId={activity.id} compact mapRefreshKey={mapRefreshKey} preferStreetMap={preferStreetMap} />}
     </View>
   );
 }

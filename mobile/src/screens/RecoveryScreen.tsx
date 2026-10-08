@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { RouteMiniMap } from '../components/RouteMiniMap';
 import { SavePhotoButton } from '../components/SavePhotoButton';
 import { PhotoCaptureError } from '../services/activityPhotoService';
 import type { Activity } from '../types/Activity';
@@ -95,6 +96,8 @@ export function RecoveryScreen({ activity, onContinue, onFinish }: Props) {
             </View>
           </View>
         )}
+
+        <RouteMiniMap activityId={activity.id} />
 
         <View style={styles.actions}>
           {finishError && <Text style={styles.error}>{finishError}</Text>}

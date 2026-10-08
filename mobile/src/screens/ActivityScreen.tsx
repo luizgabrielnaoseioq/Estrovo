@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AppState, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { RouteMiniMap } from '../components/RouteMiniMap';
 import { SavePhotoButton } from '../components/SavePhotoButton';
 import type { GpsSummary } from '../database/repositories/locationPointRepository';
 import {
@@ -174,6 +175,8 @@ export function ActivityScreen({ activity, onFinishActivity }: Props) {
             </View>
           </View>
         )}
+
+        <RouteMiniMap activityId={activity.id} refreshKey={gpsSummary?.validCount} recording />
 
         <View style={styles.localCard}>
           <Text style={styles.localTitle}>Registro local</Text>

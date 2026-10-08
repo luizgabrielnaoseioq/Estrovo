@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ActivityListItem } from '../components/ActivityListItem';
+import { OfflineMapDownload } from '../components/OfflineMapDownload';
 import { listRecentActivities } from '../database/repositories/activityRepository';
 import { PhotoCaptureError } from '../services/activityPhotoService';
 import { LocationSetupError } from '../services/locationService';
@@ -18,6 +19,8 @@ export function HomeScreen({ onStartActivity, refreshKey }: Props) {
   const [hasError, setHasError] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
   const [startError, setStartError] = useState<string | null>(null);
+  const [mapRevision, setMapRevision] = useState(0);
+  const handleMapComplete = useCallback(() => setMapRevision((revision) => revision + 1), []);
 
   useEffect(() => {
     let isMounted = true;
@@ -85,6 +88,8 @@ export function HomeScreen({ onStartActivity, refreshKey }: Props) {
           <Text style={styles.startError}>{startError}</Text>
         )}
 
+        <OfflineMapDownload onComplete={handleMapComplete} />
+
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Últimas atividades</Text>
         </View>
@@ -101,8 +106,8 @@ export function HomeScreen({ onStartActivity, refreshKey }: Props) {
             </Text>
           </View>
         ) : (
-          activities.map((activity) => (
-            <ActivityListItem activity={activity} key={activity.id} />
+          activities.map((activity, index) => (
+            <ActivityListItem activity={activity} key={activity.id} mapRefreshKey={mapRevision} preferStreetMap={index === 0} />
           ))
         )}
       </ScrollView>
