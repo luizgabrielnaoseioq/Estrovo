@@ -119,6 +119,19 @@ export async function getActivityGpsSummary(activityId: string): Promise<GpsSumm
   return readGpsSummary(await getDatabase(), activityId);
 }
 
+export type RoutePoint = Pick<GpsPoint, 'latitude' | 'longitude'>;
+
+export async function listValidRoutePoints(activityId: string): Promise<RoutePoint[]> {
+  const database = await getDatabase();
+  return database.getAllAsync<RoutePoint>(
+    `SELECT latitude, longitude
+     FROM raw_location_points
+     WHERE activity_id = ? AND is_valid = 1
+     ORDER BY timestamp ASC, id ASC`,
+    activityId
+  );
+}
+
 export async function listActivityPointsForSync(activityId: string): Promise<SyncLocationPoint[]> {
   const database = await getDatabase();
   const rows = await database.getAllAsync<{
