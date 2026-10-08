@@ -84,9 +84,9 @@ export function RouteMiniMap({ activityId, refreshKey, mapRefreshKey, compact = 
       longitude >= bounds[0] && latitude >= bounds[1] && longitude <= bounds[2] && latitude <= bounds[3]
     )
   )?.mapStyle;
-  const mapStyle = network.isInternetReachable === false
-    ? savedMapStyle
-    : process.env.EXPO_PUBLIC_OFFLINE_MAP_STYLE_URL || ONLINE_STYLE;
+  const mapStyle = savedMapStyle || (network.isInternetReachable === false
+    ? undefined
+    : process.env.EXPO_PUBLIC_OFFLINE_MAP_STYLE_URL || ONLINE_STYLE);
 
   useEffect(() => setMapFailed(false), [mapStyle]);
   const showStreetMap = preferStreetMap && points.length > 0 && !!mapStyle && !mapFailed;
@@ -170,7 +170,7 @@ export function RouteMiniMap({ activityId, refreshKey, mapRefreshKey, compact = 
         <Text style={styles.legend}>● Início     <Text style={styles.endDot}>●</Text> {recording ? 'Agora' : 'Fim'}</Text>
         <Text style={styles.offlineLabel}>
           {showStreetMap
-            ? network.isInternetReachable === false ? 'Ruas salvas offline' : 'Ruas online'
+            ? savedMapStyle ? 'Ruas salvas offline' : 'Ruas online'
             : 'Traçado offline, sem ruas'}
         </Text>
       </View>
