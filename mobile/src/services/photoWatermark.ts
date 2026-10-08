@@ -4,8 +4,6 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import { Platform } from 'react-native';
 
 const MAX_PHOTO_EDGE = 2400;
-console.log('watermark font families', Array.from({ length: Skia.FontMgr.System().countFamilies() }, (_, index) => Skia.FontMgr.System().getFamilyName(index)));
-console.log('watermark font glyphs', matchFont({ fontFamily: 'sans-serif', fontSize: 48 }).getGlyphIDs('07/10/2026'));
 
 function pad(value: number): string {
   return String(value).padStart(2, '0');
