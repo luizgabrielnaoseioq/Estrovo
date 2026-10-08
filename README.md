@@ -23,6 +23,14 @@ As fotos ficam no diretório de documentos do app e suas URIs e horários de cap
 
 Fotos novas recebem uma faixa com data e hora locais gravada nos pixels antes de serem associadas ao treino. O app abre apenas a câmera para criar fotos de início e fim; não há importação da galeria. O botão **Salvar foto** cria uma cópia na galeria, mediante a permissão do aparelho, sem remover o arquivo usado pelo treino. Fotos registradas antes da marca d'água permanecem como foram capturadas. Como `expo-media-library`, `expo-image-manipulator` e Skia incluem código nativo, é preciso instalar uma nova build de desenvolvimento para testar essa etapa.
 
+## Mapa do percurso
+
+O minimapa usa somente pontos de GPS classificados como válidos. A linha, o início e o fim aparecem durante o treino, na recuperação e no histórico. O trajeto continua salvo no SQLite e aparece sem internet, mesmo quando não há ruas baixadas. Com internet, o app mostra as ruas do OpenFreeMap sobre o traçado.
+
+Para deixar as ruas disponíveis offline, [gere e sirva seus próprios mapas OpenStreetMap](maps/README.md) e configure `EXPO_PUBLIC_OFFLINE_MAP_STYLE_URL` em `mobile/.env.local` com a URL do estilo. O app então oferece **Baixar mapa ao redor (90 km)** na tela inicial. O download é iniciado pelo usuário, centrado na localização atual e cobre um raio de 90 km; o nível máximo de detalhe é ajustado para respeitar o limite de 10 mil blocos. O app mostra o progresso e permite pausar ou continuar. A área baixada fica no armazenamento do aparelho. Sem fonte configurada, as ruas ficam disponíveis apenas online e o traçado sem ruas permanece disponível offline. Os servidores públicos de tiles do OpenStreetMap e do OpenFreeMap não são usados para downloads antecipados.
+
+MapLibre inclui código nativo. Após esta etapa, gere uma nova build de desenvolvimento para Android ou iOS; o Expo Go e builds anteriores não contêm o módulo de mapas.
+
 Para testar a recuperação, inicie uma atividade, feche o app e abra-o novamente. Confira a tela **Treino encontrado** e a foto inicial. Toque em **Continuar atividade**, feche e abra mais uma vez e então finalize pela tela de recuperação. A atividade finalizada deve aparecer no histórico com as duas fotos, sem criar outra atividade nem perder os pontos já salvos. O sistema operacional pode encerrar o rastreamento durante um fechamento forçado; ao reabrir, o app verifica e reinicia o serviço quando a permissão de localização em segundo plano está disponível.
 
 ## Fila de sincronização
